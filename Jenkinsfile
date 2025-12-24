@@ -1,16 +1,14 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_USER = "shaikh8828"
-        IMAGE_NAME  = "jenkins-practice-app"
-        IMAGE_TAG   = "${env.BUILD_ID}"
+    triggers {
+        githubPush()
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/harshad8828/jenkins-practice-app.git'
+                git 'https://github.com/harshad8828/jenkins-practice-app.git'
             }
         }
 
@@ -23,8 +21,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
-                sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_USER}/${IMAGE_NAME}:latest"
+                sh 'docker build -t shaikh8828/jenkins-practice-app:${BUILD_NUMBER} .'
+                sh 'docker tag shaikh8828/jenkins-practice-app:${BUILD_NUMBER} shaikh8828/jenkins-practice-app:latest'
             }
         }
 
@@ -32,33 +30,28 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     sh "echo \$PASS | docker login -u \$USER --password-stdin"
-                    sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
+                    sh "docker push shaikh8828/jenkins-practice-app:${BUILD_NUMBER}"
+                    sh "docker push shaikh8828/jenkins-practice-app:latest"
                 }
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                sh '''
+                    docker stop my-app || true
+                    docker rm my-app || true
+                    docker pull shaikh8828/jenkins-practice-app:latest
+                    docker run -d --name my-app -p 8081:3000 shaikh8828/jenkins-practice-app:latest
+                '''
             }
         }
     }
 
     post {
         always {
-            sh "docker logout || true"
-            echo "Pipeline finished!"
-        }
-        failure {
-            echo "Build failed! Please check if Node.js and Docker are installed on the Jenkins server."
+            sh 'docker logout'
+            echo 'Pipeline finished!'
         }
     }
 }
-
-stage('Deploy to Server') {
-            steps {
-                sh '''
-                    docker stop my-app || true
-                    docker rm my-app || true
-                    
-                    docker pull shaikh8828/jenkins-practice-app:latest
-                    
-                    docker run -d --name my-app -p 8081:3000 shaikh8828/jenkins-practice-app:latest
-                '''
-            }
-        }
