@@ -49,3 +49,16 @@ pipeline {
         }
     }
 }
+
+stage('Deploy to Server') {
+            steps {
+                sh '''
+                    docker stop my-app || true
+                    docker rm my-app || true
+                    
+                    docker pull shaikh8828/jenkins-practice-app:latest
+                    
+                    docker run -d --name my-app -p 8081:3000 shaikh8828/jenkins-practice-app:latest
+                '''
+            }
+        }
