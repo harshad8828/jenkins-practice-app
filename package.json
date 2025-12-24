@@ -1,0 +1,22 @@
+{
+  "name": "jenkins-practice-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Success: no real tests yet\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harshad8828/jenkins-practice-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harshad8828/jenkins-practice-app/issues"
+  },
+  "homepage": "https://github.com/harshad8828/jenkins-practice-app#readme"
+}
+
+
