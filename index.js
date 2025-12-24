@@ -2,7 +2,7 @@ const http = require('http');
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Jenkins Auto-Pilot is LIVE! Build #10 triggered by GitHub.');
+  res.end('Success! My Jenkins Pipeline is now fully Automated!');
 });
 
 const PORT = 3000;
