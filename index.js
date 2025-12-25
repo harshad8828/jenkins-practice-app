@@ -2,7 +2,7 @@ const http = require('http');
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Complete Automation! Jenkins built, pushed, and DEPLOYED this!');
+  res.end('The Pipeline is 100% Perfect!');
 });
 
 const PORT = 3000;
