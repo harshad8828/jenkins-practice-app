@@ -39,19 +39,14 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 sh '''
-                    # Stop and remove the old container named 'my-app'
-                    docker stop my-app || true
-                    docker rm my-app || true
+                    docker rm -f my-app || true
                     
-                    # Pull the latest image we just pushed
                     docker pull shaikh8828/jenkins-practice-app:latest
                     
-                    # Run it as 'my-app' on port 8081
                     docker run -d --name my-app -p 8081:3000 shaikh8828/jenkins-practice-app:latest
                 '''
             }
         }
-    }
 
     post {
         always {
